@@ -19,3 +19,5 @@ Running the Bot:
 
 The script starts polling for updates, allowing the bot to respond to commands and messages on Telegram.
 Please note that while the script checks the validity of Discord tokens and provides some user information, it does not have the ability to send direct messages to friends on Discord due to limitations imposed by the Discord API. Users are advised to use the official Discord platform for private messaging.
+
+This is a beta and it is possible that the code will not work, if you change the code, please mention me and I will try to add new functions.
