@@ -1,12 +1,20 @@
 import requests
-from telegram import Bot, Update
-from telegram.ext import CommandHandler, MessageHandler, Filters, CallbackContext, Updater
+from telegram import Bot, Update, InlineKeyboardButton, InlineKeyboardMarkup
+from telegram.ext import CommandHandler, MessageHandler, Filters, CallbackContext, Updater, CallbackQueryHandler
 
 TOKEN = "YOUR_TELEGRAM_BOT_TOKEN"
 bot = Bot(TOKEN)
 
 def start(update: Update, context: CallbackContext) -> None:
-    update.message.reply_text('Send me a Discord token to check its validity and get additional information.')
+    keyboard = [
+        [InlineKeyboardButton("Check Token", callback_data='check_token')],
+        [InlineKeyboardButton("Text Friends", callback_data='text_friends')],
+        [InlineKeyboardButton("Get User Info", callback_data='get_user_info')],
+        [InlineKeyboardButton("Get User Avatar", callback_data='get_user_avatar')],
+        [InlineKeyboardButton("Get User Activity", callback_data='get_user_activity')],
+    ]
+    reply_markup = InlineKeyboardMarkup(keyboard)
+    update.message.reply_text('Choose an option:', reply_markup=reply_markup)
 
 def check_token(update: Update, context: CallbackContext) -> None:
     token = update.message.text
@@ -85,6 +93,22 @@ def get_user_activity(update: Update, context: CallbackContext) -> None:
     else:
         update.message.reply_text("Unable to retrieve user activity information.")
 
+def button_handler(update: Update, context: CallbackContext) -> None:
+    query = update.callback_query
+    query.answer()
+
+    # Execute the corresponding command based on the button pressed
+    if query.data == 'check_token':
+        check_token(update, context)
+    elif query.data == 'text_friends':
+        text_friends(update, context)
+    elif query.data == 'get_user_info':
+        get_user_info(update, context)
+    elif query.data == 'get_user_avatar':
+        get_user_avatar(update, context)
+    elif query.data == 'get_user_activity':
+        get_user_activity(update, context)
+
 if __name__ == '__main__':
     updater = Updater(TOKEN)
 
@@ -95,6 +119,7 @@ if __name__ == '__main__':
     dp.add_handler(CommandHandler("get_user_info", get_user_info))
     dp.add_handler(CommandHandler("get_user_avatar", get_user_avatar, pass_args=True))
     dp.add_handler(CommandHandler("get_user_activity", get_user_activity, pass_args=True))
+    dp.add_handler(CallbackQueryHandler(button_handler))
 
     updater.start_polling()
     updater.idle()
