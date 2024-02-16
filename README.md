@@ -35,3 +35,17 @@ If the user includes a Discord token as an argument after the "/get_user_avatar"
 Update in MessageHandler for check_token:
 
 I adjusted the check_token function to handle tokens passed as arguments in a more consistent way.
+
+
+
+
+
+Version 3 Changes:
+New Function get_user_activity:
+
+This function retrieves and displays information about the user's recent activity on Discord.
+It includes details such as the account creation date and the last time the user was online.
+Users can trigger this function using the "/get_user_activity" command in the Telegram chat.
+CommandHandler for get_user_activity:
+
+I added a new CommandHandler for the "/get_user_activity" command, linking it to the get_user_activity functi
