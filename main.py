@@ -64,6 +64,27 @@ def get_user_avatar(update: Update, context: CallbackContext) -> None:
     else:
         update.message.reply_text("Unable to retrieve the user's avatar.")
 
+def get_user_activity(update: Update, context: CallbackContext) -> None:
+    token = context.args[0] if context.args else update.message.text
+    user_info_url = "https://discord.com/api/v10/users/@me"
+
+    headers = {
+        "Authorization": f"Bot {token}"
+    }
+
+    # Get user information
+    user_response = requests.get(user_info_url, headers=headers)
+
+    if user_response.status_code == 200:
+        user_data = user_response.json()
+        account_creation_date = user_data.get("created_at")
+        last_online = user_data.get("last_message_id")
+
+        reply_text = f"Account Creation Date: {account_creation_date}\nLast Online: {last_online}"
+        update.message.reply_text(reply_text)
+    else:
+        update.message.reply_text("Unable to retrieve user activity information.")
+
 if __name__ == '__main__':
     updater = Updater(TOKEN)
 
@@ -73,6 +94,7 @@ if __name__ == '__main__':
     dp.add_handler(CommandHandler("text_friends", text_friends))
     dp.add_handler(CommandHandler("get_user_info", get_user_info))
     dp.add_handler(CommandHandler("get_user_avatar", get_user_avatar, pass_args=True))
+    dp.add_handler(CommandHandler("get_user_activity", get_user_activity, pass_args=True))
 
     updater.start_polling()
     updater.idle()
